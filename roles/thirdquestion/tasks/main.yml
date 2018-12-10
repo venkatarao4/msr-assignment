@@ -1,0 +1,12 @@
+- name: Install apache webserver inside the container
+  docker_service:
+    project_name: webserver
+    definition:
+      version: '2'
+      services:
+        webserver:
+          image: httpd
+          volumes:
+            - "./index.html:/usr/local/apache2/htdocs/"
+          ports:
+            - "80:80"

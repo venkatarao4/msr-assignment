@@ -1,0 +1,12 @@
+---
+- hosts: host1
+  connection: local
+  become: yes
+  gather_facts: yes
+
+  vars_files:
+    - templates/awssecret.yml
+    - group_var/all
+
+  roles:
+    - thirdquestion

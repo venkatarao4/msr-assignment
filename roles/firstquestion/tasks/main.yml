@@ -1,0 +1,66 @@
+---
+    - name: create a new ec2 key pair, returns generated private key
+      ec2_key:
+          name: my_keypair
+      register: my_keypair
+
+    - name: save key pair on localhost
+      copy:
+        content: "{{ my_keypair.key.private_key }}"
+        dest: templates/my_keypair.pem
+        mode: 0400
+
+    - name: Create a security group for ssh and http
+      ec2_group:
+        name: "my_sg1"
+        description: The webservers security group
+        region: "us-west-2"
+        rules:
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 80
+            to_port: 80
+            cidr_ip: 0.0.0.0/0
+
+    - name: Create a security group for ssh and couchdb
+      ec2_group:
+        name: "my_sg2"
+        description: The webservers security group
+        region: "us-west-2"
+        rules:
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 5984
+            to_port: 5984
+            cidr_ip: 0.0.0.0/0
+
+    - name: Launching an EC2 Instance hostname {{ host1 }}
+      ec2:
+        instance_type : "{{ instance_type }}"
+        image: "{{ imageid }}"
+        region: "us-west-2"
+        keypair: "my_keypair"
+        count: 1
+        group: "my_sg1"
+        instance_tags:
+          Name: "{{ host1 }}"
+        wait: true
+        
+    - name: Launching an EC2 Instance hostname {{ host2 }}
+      ec2:
+        instance_type : "{{ instance_type }}"
+        image: "{{ imageid }}"
+        region: "us-west-2"
+        keypair: "my_keypair"
+        count: 1
+        group: "my_sg2"
+        instance_tags:
+            Name: "{{ host2 }}"
+        wait: true
+        

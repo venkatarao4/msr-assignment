@@ -1,0 +1,5 @@
+region: "us-west-2"
+user: "ubuntu"
+hoststring: "ansible_ssh_user=ubuntu ansible_ssh_private_key_file=templates/my_keypair.pem"
+hostpath: "hosts"
+docker_users: "ubuntu"

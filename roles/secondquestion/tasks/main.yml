@@ -1,0 +1,19 @@
+- name: apt-get update the server packages
+  apt:
+   update_cache=yes
+ 
+- name: Install all the packages as given in second question"
+  apt: name={{ item }} state=latest
+  with_items:
+   - node
+   - docker
+   - docker-compose
+   - git
+   - openssl
+
+- name: Ensure docker users are added to the docker group.
+  user:
+    name: "{{ item }}"
+    groups: docker
+    append: true
+  with_items: "{{ docker_users }}"
